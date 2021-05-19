@@ -66,6 +66,7 @@ class SchipolSteps @Autowired constructor(
                 // For each destination value, verify it contains an actual value
                 for(code in iataCodes) {
                     assertThat(
+
                         "IATA Codes is blanck for ${flightJsonObj.get("flightName")}",
                         code.toString().isBlank(),
                         equalTo(false)
