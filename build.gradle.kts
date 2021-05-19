@@ -27,6 +27,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
     implementation("io.rest-assured:rest-assured:${restAssuredVersion}")
     implementation("io.rest-assured:json-path:${restAssuredVersion}")
     implementation("io.rest-assured:json-schema-validator:${restAssuredVersion}")
@@ -63,7 +64,7 @@ task("cucumber") {
             classpath = cucumberRuntime + sourceSets.main.get().output + sourceSets.test.get().output
             // Change glue for your project package where the step definitions are.
             // And where the feature files are.
-            args = listOf("--plugin", "pretty", "--plugin", "json:build/cucumber-report/data/json/report.json", "--glue", "com.schipol.stepdefs", "src/test/resources")
+            args = listOf("--plugin", "pretty", "--plugin", "json:build/cucumber-report/data/json/report.json", "--glue", "com.schipol.stepdefs", "src/test/resources", "--strict")
             // Configure jacoco agent for the test coverage.
             val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
                 .filter { it.name == "jacocoagent.jar" }
@@ -80,7 +81,7 @@ cucumberReports {
 }
 
 tasks.jacocoTestReport {
-    // Give jacoco the file generated with the cucumber testes for the coverage.
+    // Give jacoco the file generated with the cucumber tests for the coverage.
     executionData(files("$buildDir/jacoco/test.exec", "$buildDir/results/jacoco/cucumber.exec"))
     reports {
         xml.isEnabled = true

@@ -11,8 +11,19 @@ class SchipolApiClient(
     private val appKey: String
 ) {
 
+//    fun apiRequestSpec(
+//        baseUri: String,
+//        basePath: String,
+//        authScheme: AuthenticationScheme
+//    ): RequestSpecBuilder {
+//        return RequestSpecBuilder()
+//            .setAuth(authScheme)
+//            .setBaseUri(baseUri)
+//            .setBasePath(basePath)
+//    }
+
     private fun getFlightsByPage(sortString: String = "", page: Int = 1) =
-        if (!sortString.isBlank()) {
+        if (sortString.isNotBlank()) {
             given()
                 .spec(RequestSpecBuilder().build())
                 .baseUri(baseUri)
@@ -27,8 +38,7 @@ class SchipolApiClient(
                 .then()
                 .extract()
                 .response()
-        }
-        else {
+        } else {
             given()
                 .spec(RequestSpecBuilder().build())
                 .baseUri(baseUri)
@@ -44,9 +54,44 @@ class SchipolApiClient(
                 .response()
         }
 
-
-        fun getFlights(sortString: String = "", page: Int = 1): Response {
-            return getFlightsByPage(sortString, page)
+    private fun getDestinationsByPage(sortString: String = "", page: Int = 1) =
+        if (sortString.isNotBlank()) {
+            given()
+                .spec(RequestSpecBuilder().build())
+                .baseUri(baseUri)
+                .basePath("/public-flights")
+                .queryParam("page", page)
+                .queryParam("sort", sortString)
+                .header("Accept", "application/json")
+                .header("ResourceVersion", "v4")
+                .header("app_id", appId)
+                .header("app_key", appKey)
+                .get("/destinations")
+                .then()
+                .extract()
+                .response()
+        } else {
+            given()
+                .spec(RequestSpecBuilder().build())
+                .baseUri(baseUri)
+                .basePath("/public-flights")
+                .queryParam("page", page)
+                .header("Accept", "application/json")
+                .header("ResourceVersion", "v4")
+                .header("app_id", appId)
+                .header("app_key", appKey)
+                .get("/destinations")
+                .then()
+                .extract()
+                .response()
         }
 
+    fun getFlights(sortString: String = "", page: Int = 1): Response {
+        return getFlightsByPage(sortString, page)
     }
+
+    fun getDestinations(sortString: String = "", page: Int = 1): Response {
+        return getDestinationsByPage(sortString, page)
+    }
+
+}
