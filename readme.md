@@ -1,7 +1,9 @@
 # Description
 This project aims to test the Schipol API as outlined in the [Test Requirements](testRequirements.txt)
 
-The framework used is Cucumber JVM with Kotlin. 
+The framework used is Cucumber JVM with Kotlin. [Rest Assured](https://rest-assured.io/) is used to build and execute 
+the API requests.
+
 Cucumber allows tests to be written using Behaviour Driven Development (BDD). This means that the tests are broken down 
 into logical steps that map to a behaviour. Steps are written in English and map to relevant code for that step.
 More information can be found here [Automation Panda - Cucumber for Java](https://automationpanda.com/2017/10/24/cucumber-jvm-for-java/#:~:text=Cucumber%20is%20an%20open%2Dsource,framework%20for%20behavior%2Ddriven%20development.&text=Cucumber%2DJVM%20is%20the%20official,using%20annotations%20and%20regular%20expressions.)
@@ -45,6 +47,7 @@ assertThat(map, hasEntry(is("one"),
 ### Reporting
 Cucumber's out of the box reporting is very limited and, in my opinion, kind of ugly. I have added a different [cucumber reporting tool](https://github.com/damianszczepanik/cucumber-reporting)
 which takes the Cucumber test output and generates a slightly prettier version. 
+![](CucumberReportExample.png)
 
 
 # General Comments

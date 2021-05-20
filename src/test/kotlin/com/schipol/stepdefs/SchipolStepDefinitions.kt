@@ -20,6 +20,8 @@ class SchipolSteps @Autowired constructor(
     private var destinationsJson = mutableListOf<JsonObject>()
     private val ausIataCodesToCities: MutableList<Map<Any?, Any?>> = mutableListOf()
 
+    var responseDestinationsList: MutableList<Map<Any?, Any?>> = mutableListOf()
+
 
     init {
         Given("I have access to the Schipol API") {
@@ -34,6 +36,7 @@ class SchipolSteps @Autowired constructor(
                 equalTo(200)
             )
             val totalPages = getTotalResponsePages(commonStepsDefinitions.response)
+            commonStepsDefinitions.scenario.write("$totalPages Pages total to request data from")
 
             // Query the API for each page and store flight results
             var currentPage = 0
@@ -49,7 +52,8 @@ class SchipolSteps @Autowired constructor(
                     val flightObj = flight.asJsonObject
                     flightsJson.add(flightObj)
                 }
-                sleep(500)
+                // Added a sleep to avoid 429 response code
+                sleep(300)
                 currentPage++
             }
         }
@@ -71,18 +75,18 @@ class SchipolSteps @Autowired constructor(
                     )
                 }
             }
-
         }
 
         When("all destinations are retrieved in ascending order by country") {
             // get total number of pages in the response headers
             commonStepsDefinitions.response = schipolApi.getDestinations()
             assertThat(
-                "Response status code was not 200.",
+                "Response status code was not 200. Could not get destinations for page 0",
                 commonStepsDefinitions.response.statusCode,
                 equalTo(200)
             )
             val totalPages = getTotalResponsePages(commonStepsDefinitions.response)
+            commonStepsDefinitions.scenario.write("$totalPages Pages total to request data from")
 
             // Query the API for each page and store destination results
             var currentPage = 0
@@ -90,44 +94,40 @@ class SchipolSteps @Autowired constructor(
                 commonStepsDefinitions.response =
                     schipolApi.getDestinations(page = currentPage, sortString = "+country")
                 assertThat(
-                    "Response status code was not 200.",
+                    "Response status code was not 200. Could not get destinations for page $currentPage",
                     commonStepsDefinitions.response.statusCode,
                     equalTo(200)
                 )
-                val responseDestinationsList =
-                    commonStepsDefinitions.response.asJsonObject()["destinations"].asJsonArray
-                for (destinations in responseDestinationsList) {
-                    val destinationObj = destinations.asJsonObject
-                    destinationsJson.add(destinationObj)
-                }
+                responseDestinationsList.addAll(commonStepsDefinitions.response.jsonPath().getList("destinations"))
 
-                val destinationsList: List<Map<String, Any>> =
-                    commonStepsDefinitions.response.jsonPath().getList("destinations")
-                for (destination in destinationsList) {
+
+                for (destination in responseDestinationsList) {
                     if (destination["country"] == "Australia") {
                         ausIataCodesToCities.add(mapOf(Pair("iata", destination["iata"])))
                         ausIataCodesToCities.add(mapOf(Pair("city", destination["city"])))
                     }
                 }
-                // Added a sleep to avoid hammering the API
-                sleep(500)
+                // Added a sleep to avoid 429 response code
+                sleep(300)
                 currentPage++
             }
         }
+
         Then("verify a destination exists for Sydney, Australia") {
-            val destinations = mutableListOf<Pair<Any?, Any?>>()
+            val destinations = mutableListOf<Map<Any?, Any?>>()
 
             // For each flight, verify the route destinations section has at least one value
-            for (destinationJsonObj in destinationsJson) {
-                val city = destinationJsonObj.get("city").toString().replace("\"", "")
-                val country = destinationJsonObj.get("country").toString().replace("\"", "")
-                destinations.add(Pair(city, country))
+            for (destination in responseDestinationsList) {
+                val city = destination["city"]
+                val country = destination["country"]
+                destinations.add(mapOf(Pair(city, country)))
             }
             val expPair = Pair("Sydney", "Australia")
+            val expMap = mapOf<Any?, Any?>(expPair)
             assertThat(
                 "At least one destination found for Sydney, Australia",
-                destinations.contains(expPair),
-                equalTo(true)
+                destinations,
+                hasItem(expMap)
             )
         }
         And("verify all IATA and destination cities exist for Australia") {
@@ -144,7 +144,7 @@ class SchipolSteps @Autowired constructor(
             schipolApi = SchipolApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "invalidKey")
         }
         When("I try to get flight information") {
-            commonStepsDefinitions.response = schipolApi.getFlights()
+            commonStepsDefinitions.response = schipolApi.getFlightsWithConsoleLogs()
         }
         Then("a response code of 403 is returned") {
             assertThat(
