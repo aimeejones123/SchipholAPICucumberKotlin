@@ -16,14 +16,14 @@ class SchipolSteps @Autowired constructor(
 ) : En {
     lateinit var schipolApi: SchipolApiClient
 
-    var flightsJson = mutableListOf<JsonObject>()
-    var destinationsJson = mutableListOf<JsonObject>()
-    val ausIataCodesToCities: MutableList<Map<Any?, Any?>> = mutableListOf()
+    private var flightsJson = mutableListOf<JsonObject>()
+    private var destinationsJson = mutableListOf<JsonObject>()
+    private val ausIataCodesToCities: MutableList<Map<Any?, Any?>> = mutableListOf()
 
 
     init {
         Given("I have access to the Schipol API") {
-            schipolApi = SchipolApiClient("https://api.schiphol.nl", "bc414cbb", "2a36aa2ed5b29a984d388619cb527046")
+            schipolApi = SchipolApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "2a36aa2ed5b29a984d388619cb527046")
         }
         When("all flights leaving Schipol today are retrieved") {
             // get total number of pages in the response headers
@@ -36,7 +36,7 @@ class SchipolSteps @Autowired constructor(
             val totalPages = getTotalResponsePages(commonStepsDefinitions.response)
 
             // Query the API for each page and store flight results
-            var currentPage = 1
+            var currentPage = 0
             while (currentPage < totalPages) {
                 commonStepsDefinitions.response = schipolApi.getFlights(page = currentPage)
                 assertThat(
@@ -52,14 +52,10 @@ class SchipolSteps @Autowired constructor(
                 sleep(500)
                 currentPage++
             }
-            println("FLIGHTS JSON")
-            println(flightsJson)
-
         }
         Then("verify each flight contains IATA codes") {
             // For each flight, verify the route destinations section has at least one value
             for (flightJsonObj in flightsJson) {
-                println(flightJsonObj.get("route").asJsonObject.get("destinations").asJsonArray)
                 val iataCodes = flightJsonObj.get("route").asJsonObject.get("destinations").asJsonArray
                 assertThat(
                     "IATA Codes not present for ${flightJsonObj.get("flightName")}",
@@ -69,7 +65,7 @@ class SchipolSteps @Autowired constructor(
                 // For each destination value, verify it contains an actual value
                 for (code in iataCodes) {
                     assertThat(
-                        "IATA Codes is blanck for ${flightJsonObj.get("flightName")}",
+                        "IATA Codes is blank for ${flightJsonObj.get("flightName")}",
                         code.toString().isBlank(),
                         equalTo(false)
                     )
@@ -89,7 +85,7 @@ class SchipolSteps @Autowired constructor(
             val totalPages = getTotalResponsePages(commonStepsDefinitions.response)
 
             // Query the API for each page and store destination results
-            var currentPage = 1
+            var currentPage = 0
             while (currentPage < totalPages) {
                 commonStepsDefinitions.response =
                     schipolApi.getDestinations(page = currentPage, sortString = "+country")
@@ -145,7 +141,7 @@ class SchipolSteps @Autowired constructor(
         }
 
         Given("I don't have access to the Schipol API") {
-            schipolApi = SchipolApiClient("https://api.schiphol.nl", "bc414cbb", "invalidKey")
+            schipolApi = SchipolApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "invalidKey")
         }
         When("I try to get flight information") {
             commonStepsDefinitions.response = schipolApi.getFlights()

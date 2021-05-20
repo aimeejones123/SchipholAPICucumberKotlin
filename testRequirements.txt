@@ -1,0 +1,21 @@
+Using the following API https://developer.schiphol.nl/
+
+1. Obtain an API Key to use in your code.
+
+2. Access the API retrieve details of the following:
+    a. All country / city combinations available as destinations from Schiphol. Sort by
+    country ascending. Verify the results contain "city": "Sydney", "country": "Australia"
+    b. Get a list of all IATA codes for "country": "Australia" and return them with their
+    destination city.
+        i. If either an IATA code or Destination city is missing, report this as a failure.
+
+3. Access the API and retrieve data for all flights leaving Schiphol today. Find and return
+information about the IATA code for each flight, along with the destination and time of
+departure. Verify there is an IATA code for each flight, if not return as a failure.
+
+4. Attempt to call the API with an invalid API key – validate the response.
+
+5. In each case ensure you are validating the responses returned from the APIs are correct.
+
+Demonstrate test automation and the use of frameworks that will help with readability,
+maintainability, validation and reporting.
