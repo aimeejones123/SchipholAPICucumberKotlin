@@ -30,7 +30,7 @@ As tests are broken up into the various steps it makes it very easy to break cod
 a specific task, rather than methods that span 100's of lines. 
 
 ### Validation
-Hamcrest matchers are used throughout my tests and are very powerful for asserting data is correct.
+[Hamcrest matchers](http://hamcrest.org/JavaHamcrest/tutorial) are used throughout my tests and are very powerful for asserting data is correct.
 They are easy to read but provide simple ways to assert on objects and within data structures.
 ```
 assertThat(theBiscuit, equalTo(myBiscuit)); 
@@ -65,20 +65,26 @@ users a better experience:
   
 ## Tests
 If changes to the API aren't possible then I would try to improve the tests themselves.
-- Efficiency: Where possible I would check each response page for the condition to be met, and as soon as I find what I'm 
-  looking for, break the loop to stop making unnecessary requests.
-- Reporting: I have used a "Pretty" cucumber reporting tool which is nice to look at, but limited in the information it 
+- Efficiency: 
+  - Where possible, I would adopt a fail fast approach. To do this I would check each response page for the 
+  condition to be met, and as soon as I find what I'm looking for, break the loop to stop making unnecessary requests.
+  - This would also prevent creating large datasets that could take a long time to search. 
+- Reporting:
+  - I have implemented a "Pretty" cucumber reporting tool which is nice to look at, but limited in the information it 
   shows. A better tool to integrate with could be Allure, but was not possible in the limited time.
-- Logging: If I had more time I would try to log more to the reports. There is a way to add custom logging to Rest 
+- Logging: 
+  - If I had more time, I would try to log more to the reports. There is a way to add custom logging to Rest 
   Assured requests and responses which would be nice to have in the test reports for visibility.
 
 
 
 # Steps to run
-fail fast
-Don't save all responses in list as there could be 1000s
-
-
-TO DO 
-- fix parsing.. try to remove use of gson as it makes more work for casting to correct objects
-- fail faster/dont store all data. - add checks on responses to limit data sets we are validating
+1. Open a terminal and navigate to a directory to clone the project
+2. `git clone https://github.com/aimeejones123/schipolApiCucumberKotlin.git`
+3. Open the project in intellij.
+4. It should automatically start downloading dependencies and building. 
+   - If it doesn't, open the Gradle pane on the right-hand side of the application. Navigate: Tasks > build and click 
+     `build`. (It will say build `failed for task :test`, this can be ignored)
+5. To run the cucumber tests, navigate to Tasks > other and run the `cucumber` task.
+6. Generate the cucumber report by navigating to Tasks > build > cucumber reports and run the `generateCucumberReports` task
+    - A html report will be stored in build/test-report
