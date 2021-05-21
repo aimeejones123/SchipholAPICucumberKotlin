@@ -1,5 +1,5 @@
 # Description
-This project aims to test the Schipol API as outlined in the [Test Requirements](testRequirements.txt)
+This project aims to test the Schiphol API as outlined in the [Test Requirements](testRequirements.txt)
 
 The framework used is Cucumber JVM with Kotlin. [Rest Assured](https://rest-assured.io/) is used to build and execute 
 the API requests.
@@ -51,7 +51,7 @@ which takes the Cucumber test output and generates a slightly prettier version.
 
 
 # General Comments
-The Schipol public API is very limited in terms of searching for specific data.
+The Schiphol public API is very limited in terms of searching for specific data.
 In order to search for specific destinations, flights etc it requires retrieving all the data.
 The limited entries returned per page (the docs specify 20 but in some cases I think it's 50) requires multiple calls to
 be made to get the full dataset of results.
@@ -83,7 +83,7 @@ If changes to the API aren't possible then I would try to improve the tests them
 
 # Steps to run
 1. Open a terminal and navigate to a directory to clone the project
-2. `git clone https://github.com/aimeejones123/schipolApiCucumberKotlin.git`
+2. `git clone https://github.com/aimeejones123/SchipholAPICucumberKotlin.git`
 3. Open the project in intellij.
 4. It should automatically start downloading dependencies and building. 
    - If it doesn't, open the Gradle pane on the right-hand side of the application. Navigate: Tasks > build and click 

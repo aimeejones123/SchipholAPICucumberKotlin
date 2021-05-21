@@ -1,10 +1,10 @@
-package com.schipol.api
+package com.schiphol.api
 
 import io.restassured.RestAssured.given
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.response.Response
 
-class SchipolApiClient(
+class SchipholApiClient(
     private val baseUri: String,
     private val basePath: String,
     private val appId: String,

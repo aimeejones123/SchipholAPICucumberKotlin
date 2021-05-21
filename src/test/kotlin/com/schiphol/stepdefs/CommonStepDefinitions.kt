@@ -1,6 +1,6 @@
-package com.schipol.stepdefs
+package com.schiphol.stepdefs
 
-import com.schipol.hooks.AppConfiguration
+import com.schiphol.hooks.AppConfiguration
 import io.cucumber.java.Before
 import io.cucumber.java.Scenario
 import io.restassured.response.Response

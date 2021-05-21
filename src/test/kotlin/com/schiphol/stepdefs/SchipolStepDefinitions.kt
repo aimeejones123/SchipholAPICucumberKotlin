@@ -1,8 +1,8 @@
-package com.schipol.stepdefs
+package com.schiphol.stepdefs
 
 import com.google.gson.JsonObject
-import com.schipol.api.SchipolApiClient
-import com.schipol.helpers.asJsonObject
+import com.schiphol.api.SchipholApiClient
+import com.schiphol.helpers.asJsonObject
 import io.cucumber.java8.En
 import io.restassured.response.Response
 import org.hamcrest.MatcherAssert.assertThat
@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.lang.Thread.sleep
 
 
-class SchipolSteps @Autowired constructor(
+class SchipholSteps @Autowired constructor(
     private var commonStepsDefinitions: CommonStepsDefinitions,
 ) : En {
-    lateinit var schipolApi: SchipolApiClient
+    lateinit var schipholApi: SchipholApiClient
 
     private var flightsJson = mutableListOf<JsonObject>()
     private var destinationsJson = mutableListOf<JsonObject>()
@@ -24,12 +24,12 @@ class SchipolSteps @Autowired constructor(
 
 
     init {
-        Given("I have access to the Schipol API") {
-            schipolApi = SchipolApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "2a36aa2ed5b29a984d388619cb527046")
+        Given("I have access to the Schiphol API") {
+            schipholApi = SchipholApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "2a36aa2ed5b29a984d388619cb527046")
         }
-        When("all flights leaving Schipol today are retrieved") {
+        When("all flights leaving Schiphol today are retrieved") {
             // get total number of pages in the response headers
-            commonStepsDefinitions.response = schipolApi.getFlights()
+            commonStepsDefinitions.response = schipholApi.getFlights()
             assertThat(
                 "Response status code was not 200.",
                 commonStepsDefinitions.response.statusCode,
@@ -41,7 +41,7 @@ class SchipolSteps @Autowired constructor(
             // Query the API for each page and store flight results
             var currentPage = 0
             while (currentPage < totalPages) {
-                commonStepsDefinitions.response = schipolApi.getFlights(page = currentPage)
+                commonStepsDefinitions.response = schipholApi.getFlights(page = currentPage)
                 assertThat(
                     "Response status code was not 200.",
                     commonStepsDefinitions.response.statusCode,
@@ -79,7 +79,7 @@ class SchipolSteps @Autowired constructor(
 
         When("all destinations are retrieved in ascending order by country") {
             // get total number of pages in the response headers
-            commonStepsDefinitions.response = schipolApi.getDestinations()
+            commonStepsDefinitions.response = schipholApi.getDestinations()
             assertThat(
                 "Response status code was not 200. Could not get destinations for page 0",
                 commonStepsDefinitions.response.statusCode,
@@ -92,7 +92,7 @@ class SchipolSteps @Autowired constructor(
             var currentPage = 0
             while (currentPage < totalPages) {
                 commonStepsDefinitions.response =
-                    schipolApi.getDestinations(page = currentPage, sortString = "+country")
+                    schipholApi.getDestinations(page = currentPage, sortString = "+country")
                 assertThat(
                     "Response status code was not 200. Could not get destinations for page $currentPage",
                     commonStepsDefinitions.response.statusCode,
@@ -140,11 +140,11 @@ class SchipolSteps @Autowired constructor(
             }
         }
 
-        Given("I don't have access to the Schipol API") {
-            schipolApi = SchipolApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "invalidKey")
+        Given("I don't have access to the Schiphol API") {
+            schipholApi = SchipholApiClient("https://api.schiphol.nl", "/public-flights","bc414cbb", "invalidKey")
         }
         When("I try to get flight information") {
-            commonStepsDefinitions.response = schipolApi.getFlightsWithConsoleLogs()
+            commonStepsDefinitions.response = schipholApi.getFlightsWithConsoleLogs()
         }
         Then("a response code of 403 is returned") {
             assertThat(

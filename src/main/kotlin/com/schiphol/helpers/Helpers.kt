@@ -1,4 +1,4 @@
-package com.schipol.helpers
+package com.schiphol.helpers
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
