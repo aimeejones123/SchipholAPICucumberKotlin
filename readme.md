@@ -89,5 +89,6 @@ If changes to the API aren't possible then I would try to improve the tests them
    - If it doesn't, open the Gradle pane on the right-hand side of the application. Navigate: Tasks > build and click 
      `build`. (It will say build `failed for task :test`, this can be ignored)
 5. To run the cucumber tests, navigate to Tasks > other and run the `cucumber` task.
+   - Note: 1 test will fail which will cause cucumber to fail with exit code 1. This is normal behaviour.
 6. Generate the cucumber report by navigating to Tasks > cucumber reports and run the `generateCucumberReports` task
     - A html report will be stored in build/test-report
