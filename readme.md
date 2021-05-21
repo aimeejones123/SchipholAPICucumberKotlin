@@ -53,15 +53,15 @@ which takes the Cucumber test output and generates a slightly prettier version.
 # General Comments
 The Schiphol public API is very limited in terms of searching for specific data.
 In order to search for specific destinations, flights etc it requires retrieving all the data.
-The limited entries returned per page (the docs specify 20 but in some cases I think it's 50) requires multiple calls to
+The limited entries returned per page (the docs specify 20 but in some cases higher) requires multiple calls to
 be made to get the full dataset of results.
 This has caused the tests to run very slowly and inefficiently as the full response dataset is needed.
 
 # Suggested Improvements
 ## Api 
 I have written the tests as they have been asked for in the [Test Requirements](testRequirements.txt) but if I were 
-working on the team developing the API I would ask for the following to allow more efficient testing and to give end 
-users a better experience:
+working on the team developing the API I would ask for the following to allow more efficient testing and to give 
+consumers of the API a better experience:
 - More search parameters. For example, search by country rather than just sort. 
 - Ability to specify number of records returned per page. If returning the full dataset is not an option then this could 
   significantly reduce the number of calls needed to retrieve all data
@@ -89,5 +89,5 @@ If changes to the API aren't possible then I would try to improve the tests them
    - If it doesn't, open the Gradle pane on the right-hand side of the application. Navigate: Tasks > build and click 
      `build`. (It will say build `failed for task :test`, this can be ignored)
 5. To run the cucumber tests, navigate to Tasks > other and run the `cucumber` task.
-6. Generate the cucumber report by navigating to Tasks > build > cucumber reports and run the `generateCucumberReports` task
+6. Generate the cucumber report by navigating to Tasks > cucumber reports and run the `generateCucumberReports` task
     - A html report will be stored in build/test-report
